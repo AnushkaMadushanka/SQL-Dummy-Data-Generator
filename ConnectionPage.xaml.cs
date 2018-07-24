@@ -79,5 +79,19 @@ namespace SQL_Dummy_Data_Generator
                 }
             });
         }
+
+        private void AuthCb_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (AuthGrid == null) return;
+            switch (AuthCb.SelectedIndex)
+            {
+                case 0:
+                    AuthGrid.IsEnabled = false;
+                    break;
+                case 1:
+                    AuthGrid.IsEnabled = true;
+                    break;
+            }
+        }
     }
 }

@@ -6,7 +6,7 @@
         xmlns:controls="clr-namespace:SQL_Dummy_Data_Generator.Controls"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
-        Title="MainWindow" Height="358" Width="1000" Loaded="MainWindow_OnLoaded">
+        Title="SQL Dummy Data Generator" Height="358" Width="1000" Loaded="MainWindow_OnLoaded">
     <Grid>
         <Frame Name="MainFrame" NavigationUIVisibility="Hidden"/>
     </Grid>

@@ -13,11 +13,11 @@
         <Label Content="Server name" Margin="10,46,10,229"/>
         <TextBox Name="ServerNameTb" Margin="112,46,10,229"/>
         <Label Content="Authentication" Margin="10,76,10,199"/>
-        <ComboBox Name="AuthCb" Margin="112,76,10,199" SelectedIndex="0">
+        <ComboBox Name="AuthCb" Margin="112,76,10,199" SelectedIndex="0" SelectionChanged="AuthCb_SelectionChanged">
             <ComboBoxItem Content="Windows Authentication"/>
             <ComboBoxItem Content="SQL Server Authentication"/>
         </ComboBox>
-        <Grid IsEnabled="False">
+        <Grid Name="AuthGrid" IsEnabled="False">
             <Label Content="User name" Margin="25,110,10,165"/>
             <TextBox Name="UsernameTb" Height="25" Margin="121,110,10,165"/>
             <Label Content="Password" Margin="25,140,10,135"/>
