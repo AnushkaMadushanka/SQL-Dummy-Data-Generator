@@ -22,6 +22,15 @@
             <ComboBoxItem Content="Static Text + GUID"/>
             <ComboBoxItem Content="GUID"/>
             <ComboBoxItem Content="RegEx"/>
+            <ComboBoxItem Content="FirstName"/>
+            <ComboBoxItem Content="LastName"/>
+            <ComboBoxItem Content="FullName"/>
+            <ComboBoxItem Content="Prefix"/>
+            <ComboBoxItem Content="Suffix"/>
+            <ComboBoxItem Content="JobTitle"/>
+            <ComboBoxItem Content="JobDescriptor"/>
+            <ComboBoxItem Content="JobArea"/>
+            <ComboBoxItem Content="JobType"/>
         </ComboBox>
 
         <xctk:WatermarkTextBox Name="StaticTextBox" Watermark="Text" Grid.Column="3"/>

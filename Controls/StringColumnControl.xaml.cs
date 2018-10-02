@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using Bogus;
+using SQL_Dummy_Data_Generator.Models;
 
 namespace SQL_Dummy_Data_Generator.Controls
 {
@@ -40,6 +43,11 @@ namespace SQL_Dummy_Data_Generator.Controls
         {
             var textSize = TextSizeIntUpDown.Value ?? 0;
             var selectedItem = (ComboBoxItem)DuplicateTypeCombo.SelectedItem;
+            var faker = DashboardPage.Fakers.FirstOrDefault(i => i.Id == textSize);
+            var isNew = faker == null;
+            var bogusFaker = new Faker();
+            faker = faker ?? new FakerModel{Id = textSize};
+
             if (selectedItem.Content is "Static")
             {
                 Value = $"{StaticTextBox.Text}";
@@ -67,7 +75,7 @@ namespace SQL_Dummy_Data_Generator.Controls
 
                 Value = $"{_rxrdg.Generate()}";
             }
-            else if (selectedItem.Content.ToString() == $"Referenced Table ({Referenced.ReferencedTableName}.{Referenced.ReferencedColumnName})")
+            else if (selectedItem.Content.ToString() == $"Referenced Table ({Referenced?.ReferencedTableName}.{Referenced?.ReferencedColumnName})")
             {
                 if (_dataTable.Rows.Count == 0)
                     using (var con = new SqlConnection(Referenced.ConnectionString))
@@ -88,6 +96,41 @@ namespace SQL_Dummy_Data_Generator.Controls
                 if (_dataTable.Rows.Count > 0)
                     Value = _dataTable.Rows[Random.Next(0, _dataTable.Rows.Count)][
                         $"{Referenced.ReferencedColumnName}"].ToString();
+            }
+            else if (selectedItem.Content is "FirstName")
+            {
+                faker.FirstName = Value = string.IsNullOrEmpty(faker.FirstName) ? bogusFaker.Name.FirstName(faker.IsMale
+                    ? Bogus.DataSets.Name.Gender.Male
+                    : Bogus.DataSets.Name.Gender.Female) : faker.FirstName;
+            }
+            else if (selectedItem.Content is "LastName") {
+                faker.LastName = Value = string.IsNullOrEmpty(faker.LastName) ? bogusFaker.Name.LastName(faker.IsMale
+                    ? Bogus.DataSets.Name.Gender.Male
+                    : Bogus.DataSets.Name.Gender.Female) : faker.LastName;
+            }
+            else if (selectedItem.Content is "FullName")
+            {
+                faker.FirstName = string.IsNullOrEmpty(faker.FirstName)? bogusFaker.Name.FirstName(faker.IsMale
+                    ? Bogus.DataSets.Name.Gender.Male
+                    : Bogus.DataSets.Name.Gender.Female) : faker.FirstName;
+                faker.LastName = string.IsNullOrEmpty(faker.LastName) ? bogusFaker.Name.LastName(faker.IsMale
+                    ? Bogus.DataSets.Name.Gender.Male
+                    : Bogus.DataSets.Name.Gender.Female): faker.LastName;
+                faker.FullName = Value = faker.FirstName + " " + faker.LastName;
+            }
+            else if (selectedItem.Content is "Prefix") { faker.Prefix = Value = bogusFaker.Name.Prefix(faker.IsMale ? Bogus.DataSets.Name.Gender.Male : Bogus.DataSets.Name.Gender.Female); }
+            else if (selectedItem.Content is "Suffix") { faker.Suffix = Value = bogusFaker.Name.Suffix(); }
+            else if (selectedItem.Content is "JobTitle") { faker.JobTitle = Value = bogusFaker.Name.JobTitle(); }
+            else if (selectedItem.Content is "JobDescriptor") { faker.JobDescriptor = Value = bogusFaker.Name.JobDescriptor(); }
+            else if (selectedItem.Content is "JobArea") { faker.JobArea = Value = bogusFaker.Name.JobArea(); }
+            else if (selectedItem.Content is "JobType") { faker.JobType = Value = bogusFaker.Name.JobType(); }
+
+            if (isNew)
+                DashboardPage.Fakers.Add(faker);
+            else
+            {
+                var index = DashboardPage.Fakers.FindIndex(i => i.Id == faker.Id);
+                DashboardPage.Fakers[index] = faker;
             }
         }
 
@@ -112,6 +155,18 @@ namespace SQL_Dummy_Data_Generator.Controls
                 case "RegEx":
                     TextSizeIntUpDown.Visibility = Visibility.Hidden;
                     StaticTextBox.Visibility = Visibility.Visible;
+                    break;
+                case "FirstName":
+                case "LastName":
+                case "FullName":
+                case "Prefix":
+                case "Suffix":
+                case "JobTitle":
+                case "JobDescriptor":
+                case "JobArea":
+                case "JobType":
+                    TextSizeIntUpDown.Visibility = Visibility.Visible;
+                    StaticTextBox.Visibility = Visibility.Hidden;
                     break;
                 default:
                     TextSizeIntUpDown.Visibility = Visibility.Hidden;

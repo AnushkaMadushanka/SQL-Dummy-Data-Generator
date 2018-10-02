@@ -8,8 +8,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using Bogus;
 using Microsoft.Win32;
 using SQL_Dummy_Data_Generator.Controls;
+using SQL_Dummy_Data_Generator.Models;
 using Path = System.IO.Path;
 
 namespace SQL_Dummy_Data_Generator
@@ -19,6 +21,7 @@ namespace SQL_Dummy_Data_Generator
     /// </summary>
     public partial class DashboardPage : Page
     {
+        public static List<FakerModel> Fakers;
         private string _database;
         private string _table;
 
@@ -233,6 +236,7 @@ namespace SQL_Dummy_Data_Generator
             {
                 BottomGrid.IsEnabled = false;
                 var numberOfRecords = RecordCount.Value ?? 0;
+                Fakers = new List<FakerModel>();
                 await Task.Factory.StartNew(() =>
                 {
                     var sb = new StringBuilder($"USE[{_database}]{Environment.NewLine}GO{Environment.NewLine}");
@@ -263,6 +267,7 @@ namespace SQL_Dummy_Data_Generator
                         sb.Append(query);
                         var i1 = i;
                         ProgressBar.Dispatcher.Invoke(() => { ProgressBar.Value = (int)(i1 / (float)numberOfRecords * 100); });
+                        Fakers = new List<FakerModel>();
                     }
 
                     ProgressBar.Dispatcher.Invoke(() => { ProgressBar.Value = 100; });
@@ -295,6 +300,7 @@ namespace SQL_Dummy_Data_Generator
             {
                 BottomGrid.IsEnabled = false;
                 var numberOfRecords = RecordCount.Value ?? 0;
+                Fakers = new List<FakerModel>();
                 await Task.Factory.StartNew(() =>
                 {
                     var controls = new List<Control>();
